@@ -10,10 +10,45 @@ import sys, traceback
 #   - 16-32 moves from solution
 
 # Problem:
-# Basically sudoku. The goal is to have a unique number in the range of 1
-# to equal to x or y size of 
+# Basically Sudoku. The goal is to have a unique number 
+# in the range of 1 to n, n being the size of the Sudoku.
 
+#First
+#scan. start in a corner and go to each blank, check to see if there is an easy to spot outcome, else move on
 
+#data()
+#2-3
+#1--
+#--1
+
+#Idea for structuring
+#tiles += [Tile(('2*3', '1**', '**1'),('213', '132', '321'))]
+#Sudoku = ['2*3', ['1**', ['**1']]], ['213', ['132', ['321']]]
+#print(L[2])
+# Prints ['cc', 'dd', ['eee', 'fff']]
+
+#print(L[2][2])
+# Prints ['eee', 'fff']
+
+#print(L[2][2][0])
+# Prints eee
+#https://www.learnbyexample.org/python-nested-list/
+# tiles[-1].label = '3x3 sudoku, * moves to solve, not counting agent movement'
+
+class Solo(search.Problem):
+    
+    def actions(self,state):
+        return
+
+    def result(self, state, action):
+        return
+
+    def goal_test(self, state):
+        for r in range(self.rows):
+            if state[r] != self.goal[r]:
+                return False
+        return True
+        
 
 # A trivial Problem definition
 class LightSwitch(search.Problem):
@@ -145,6 +180,8 @@ class Tile(search.Problem):
                         for a in actions]
             state = random.choice(children)
         return state
+
+
 
 tiles = []
 tiles += [Tile(('ca','_b'),('ab','c_'))]
