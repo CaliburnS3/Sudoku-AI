@@ -2,6 +2,19 @@ import search
 import random
 import sys, traceback
 
+# TODO
+# create a grid
+# • Create problems that are:
+#   - 2 moves from solution
+#   - 4-8 moves from solution
+#   - 16-32 moves from solution
+
+# Problem:
+# Basically sudoku. The goal is to have a unique number in the range of 1
+# to equal to x or y size of 
+
+
+
 # A trivial Problem definition
 class LightSwitch(search.Problem):
     # initial state constructor inherited
@@ -179,8 +192,8 @@ def flounder(problem, giveup=10000):
 
 # fix this in your first commit and pull
 names = [
-    'Aardvark, Aaron',
-    'Aardvark, Aamy',
+    'Ingram, Franklin Clarkie',
+    'Murdock, Atom',
 ]
 
 searches = {}
