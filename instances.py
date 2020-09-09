@@ -27,6 +27,31 @@ import sys, traceback
 #print(L[2])
 # Prints ['cc', 'dd', ['eee', 'fff']]
 
+# Each cell stored as tuple 
+# A1 = (a,1,3)
+# cell = (row, col, val);
+
+# Using zero since it is an integer we will never use
+# 4x4 puzzle
+# A1 = (a,1,1)
+# A2 = (a, 2, 4)
+# A3 = (a, 3, 3)
+# A4 = (a, 4, 2)
+# B1 = (b, 1, 0)
+# B2 = (b, 2, 0)
+# B3 = (b, 3, 1)
+# B4 = (b, 4, 4)
+# C1 = (c, 1, 4)
+# C2 = (c, 2, 1)
+# C3 = (c, 3, 2)
+# C4 = (c, 4, 3)
+# D1 = (d, 1, 2)
+# D2 = (d, 2, 3)
+# D3 = (d, 3, 0)
+# D4 = (d, 4, 0)
+
+# Sudoku = []
+
 #print(L[2][2])
 # Prints ['eee', 'fff']
 
