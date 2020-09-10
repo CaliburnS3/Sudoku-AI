@@ -535,6 +535,7 @@ class LRTAStarAgent:
         self.H = {}
         self.s = None
         self.a = None
+        # Nope
 
     def __call__(self, s1):     # as of now s1 is a state rather than a percept
         if self.problem.goal_test(s1):

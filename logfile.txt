@@ -1,0 +1,31 @@
+/usr/local/bin/python3.8 /Users/adammurdock/Dropbox/School/20-fall/artificial-intelligence/shared-workspace/sudoku/demo.py
+      Searches that compile for Ingram, Clark: ['4x4 Sudoku, 1 gaps', '4x4 Sudoku, 7 gaps', '4x4 Sudoku, 4 gaps']
+Search methods that compile for Ingram, Clark: ['depth_first_graph_search', 'breadth_first_search', 'iterative_deepening_search', 'uniform_cost_search', 'astar_search', 'flounder']
+----------------------------------------
+Ingram, Clark                4x4 Sudoku, 1 gaps              4x4 Sudoku, 7 gaps              4x4 Sudoku, 4 gaps           
+                             (<succ/goal/stat/fina>, cost)   (<succ/goal/stat/fina>, cost)   (<succ/goal/stat/fina>, cost)
+depth_first_graph_search     (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf) 
+breadth_first_search         (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf) 
+iterative_deepening_search   (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf) 
+uniform_cost_search          (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf) 
+astar_search                 (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf)    (<   1/   2/   0/None>, inf) 
+flounder                     (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf)    (<   1/   1/   0/None>, inf) 
+----------------------------------------
+Best Path for 4x4 Sudoku, 1 gaps: 
+Best Path for 4x4 Sudoku, 7 gaps: 
+Best Path for 4x4 Sudoku, 4 gaps: 
+----------------------------------------
+      Searches that compile for Murdock, Adam: []
+Search methods that compile for Murdock, Adam: ['astar_search']
+----------------------------------------
+Murdock, Adam
+             
+astar_search 
+----------------------------------------
+----------------------------------------
+Scores for: Ingram, Clark
+Scores for: Murdock, Adam
+Ingram, Clark summary: [0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Ingram, Clark   total: 10
+
+Process finished with exit code 0
