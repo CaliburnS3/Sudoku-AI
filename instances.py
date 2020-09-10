@@ -1,359 +1,155 @@
 import search
-import random
-import sys, traceback
-
-# TODO
-# create a grid
-# • Create problems that are:
-#   - 2 moves from solution
-#   - 4-8 moves from solution
-#   - 16-32 moves from solution
-
-# Problem:
-# Basically Sudoku. The goal is to have a unique number 
-# in the range of 1 to n, n being the size of the Sudoku.
-
-#First
-#scan. start in a corner and go to each blank, check to see if there is an easy to spot outcome, else move on
-
-#Idea for structuring
-#tiles += [Tile(('2*3', '1**', '**1'),('213', '132', '321'))]
-#Sudoku = ['2*3', ['1**', ['**1']]], ['213', ['132', ['321']]]
-#print(L[2])
-# Prints ['cc', 'dd', ['eee', 'fff']]
-
-# Each cell stored as tuple 
-# A1 = (a,1,3)
-# cell = (row, col, val);
-
-# Using zero since it is an integer we will never use
-
-# Sudoku = []
-
-#print(L[2][2])
-# Prints ['eee', 'fff']
-
-#print(L[2][2][0])
-# Prints eee
-#https://www.learnbyexample.org/python-nested-list/
-# tiles[-1].label = '3x3 sudoku, * moves to solve, not counting agent movement'
-
-class Solo(search.Problem):
-    
-    moves = {
-
-    }
-
-    def actions(self, state):
-        row, col = self.findBlank(state)
-        actions = []
-    
-
-    def __init__(self, intial=None, goal=None, moves=10):
-
-        if goal==none:
-            raise Exception('A goal must be specified homeslice.')
-
-        self.goal = goal;
-        self.rows = rg
-        self.cols = cg
-
-        def actions(self,state):
-            return
-
-        def result(self, state, action):
-            return
-
-        def goal_test(self, state):
-            for r in range(self.rows):
-                if state[r] != self.goal[r]:
-                    return False
-            return True
-        
-
-# A trivial Problem definition
-# class LightSwitch(search.Problem):
-#     # initial state constructor inherited
-
-#     def actions(self, state):
-#         return ['up', 'down']
-
-#     def result(self, state, action):
-#         if action == 'up':
-#             return 'on'
-#         else:
-#             return 'off'
-
-#     def goal_test(self, state):
-#         return state == 'on'
-
-# switch = LightSwitch('off')
-# switch.label = 'Light Switch'
+import sys
+import traceback
 
 
-# First. we findBlank, it returns the position of the first found "blank", in this case 0
-#test
-#DONE Then, it checks the row and column, determining if there is only 1 missing value.
-#DONE If so, it runs result, replacing that 0 with that value
-#DONE If no, it runs result, replacing that 0 with an "x"
-#TODO It continues the sweep, rinsing and repeating
-#TODO Once it makes its first initial sweep, it sweeps again, replacing all "x" with 0
-#TODO One final sweep, if there are no "0" then the puzzle is complete
+class Sudoku(search.Problem):
 
-#TODO Moves can be the number options, the option to write x, or to replace x with 0
-#TODO actions can be the brain that checks the rows and columns.
-
-
-
-
-
-class Tile(search.Problem):
-    blank = '0'
-    moves = {
-        'action1': ('1'),
-        'action2': ('2'),
-        'action3': ('3'),
-        'action4': ('4'),
-        'action5': ('5'),
-        'action6': ('6'),
-        'action7': ('7'),
-        'action8': ('8'),
-        'action9': ('9'),
-        'action0': ('0'),
-        'actionX': ('X'),
-        
-    }
-    def __init__(self, initial=None, goal=None, moves=10000):
-        '''
-        Initialize the tile puzzle.
-        :param initial: a 2D sequence of characters
-        representing tiles on a rectangular board.
-        For example, ('123','45_') represents the board:
-            1 2 3
-            4 5 _
-        Each board must contain exactly one _,
-        and all other characters must be unique.
-        :param goal: another 2D sequence of characters
-        containing exactly the same tiles on a board of
-        the same dimensions
-        '''
-        if goal == None:
-            raise Exception('A goal must be specified.')
-        rg, cg = self.tileCheck(goal)
-        self.goal = goal
-        self.rows = rg
-        self.cols = cg
-
-        #TODO - remove, this scrambles the results, WE DO NOT WANT THAT
-        if initial == None:
-            # initial = self.scramble(moves)
-            # print('initial state: %s' % str(initial))
-            print('Line 137')
-        else:
-            ri, ci = self.tileCheck(initial)
-            assert ri == rg
-            assert ci == cg
-
+    # initial state constructor inherited
+    def __init__(self, initial):
+        self.rows = len(initial)
+        self.cols = len(initial[0])
         self.initial = initial
+        print('initial = ' + str(initialState))
+        self.actions(initial)
+
 
     def actions(self, state):
-        #Done
-        #DONEif row contains no 0 or x (meaning that all other values are filled), fill in missing value
-        #DONE if column contains no 0 or x (meaning that all other values are filled), fill in missing value
-        #TODO if subbox contains no 0 or x (meaning that all other values are filled), fill in missing value
-        #DONE otherwise, it may be implicitly solvable, and we dont touch that with a 10 foot pole.
-        #DONE otherwise, we replace 0 with X, meaning that we have attempted and can not get a result
+        # New version:
+        # Checks both row and column, eliminating possiblities from both
+        # If it finishes with only 1 output possible, fill.
+        # Otherwise, put an X
+
+        # Finding blank, so that we have values to work off of
         row, col = self.findBlank(state)
-        actions = []
 
-        #These return the string version of actions
-        #Now, if string is a number, return to save a LOT of effort
-        rowValue = self.rowCheck(state)
-        if(rowValue != 'actionX' and rowValue != 'action0'):
-            actions.append(rowValue)
-            return actions
-            
-        colValue = self.colCheck(state)
-        if(colValue != 'actionX' and rowValue != 'action0'):
-            actions.append(rowValue)
-            return actions
-
-        #NOW, if you get to this point, that means that neither check worked.
-        #Replacing 0 with x, so that we dont get stuck scanning the same 0
-        actions.append('actionsX')
-        return actions
-        # return self.allowed(row, col)
-
-
-    def rowCheck(self, state):
-        test_list = [ 1, 2, 3, 4 ] 
+        # Constructing board
         board = [[t for t in row]
                  for row in state]
-        for i in range(3):
-            #Checks, so we know which value to assign if the row is valid
-            if (board[i][col] in test_list): 
-                test_list.remove(board[i][col])
 
-            if(board[i][col] == 0 and board[i][col] != board[row][col]):
-                print("This row is not solvable.")
-                return actions
+        # Fills the "answer list" with all possible values of a sudoku
+        answerList = []
+        for i in range(self.rows):
+            answerList.append(i + 1)
 
-        print("There is a solution.")
-        #Somehow check which number is missing
-        results = 'action' + str(test_list[0])
-        return results
+        # Row check
+        for i in range(self.cols):
+            rowTest = int(board[i][col])
+            if rowTest in answerList:
+                answerList.remove(rowTest)
 
-    def colCheck(self, state):
-        test_list = [ 1, 2, 3, 4 ] 
-        board = [[t for t in row]
-                 for row in state]
-        for i in range(3):
-            #Checks, so we know which value to assign if the row is valid
-            if (board[row][i] in test_list): 
-                test_list.remove(board[row][i])
-                
-            if(board[row][i] == 0 and board[rwo][i] != board[row][col]):
-                print("This col is not solvable.")
-                return 'actionX'
+        # Col check
+        for i in range(self.rows):
+            colTest = int(board[row][i])
+            if colTest in answerList:
+                answerList.remove(colTest)
 
-        print("There is a solution.")
-        #Somehow check which number is missing
-        results = 'action' + str(test_list[0])
-        return results
+        # Now, if answerList has only 1 value, fill, otherwise X
+        if len(answerList) == 1:
+            output = str(answerList[0])
+
+        else:
+            output = 'X'
+
+        # This returns the created output
+        # self.result(state, output)
+        return output
+        # return []
 
     def result(self, state, action):
         board = [[t for t in row]
                  for row in state]
+        oldState = tuple([''.join(row)
+                          for row in board])
+        # Finds the first blank, assigning it a new value and updating the game state
         rb, cb = self.findBlank(state)
-        board[rb][cb] = self.moves[action]
+        board[rb][cb] = action
+        newState = tuple([''.join(row)
+                          for row in board])
+        #TODO figure out how to assign state to outcome????
+        print('oldState = ' + str(oldState))
+        print('newState = ' + str(newState))
+        print('')
+        return newState
+
+    def convert(self, state):
+        # Converting all the 'X' back into '0' for another round of sudoku
+        board = [[t for t in row]
+                 for row in state]
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if state[r][c] == 'X':
+                    rb, cb = r, c
+        board[rb][cb] = '0'
         newState = tuple([''.join(row)
                           for row in board])
         return newState
 
-    def goal_test(self, state):
-        for r in range(self.rows):
-            if state[r] != self.goal[r]:
-                return False
-        return True
-
-    def h(self, node):
-        state = node.state
-        count = 0
-        for r in range(self.rows):
-            for c in range(self.cols):
-                if state[r][c] == self.blank:
-                    continue
-                if state[r][c] != self.goal[r][c]:
-                    count += 1
-        return count
-
     def findBlank(self, state):
         for r in range(self.rows):
             for c in range(self.cols):
-                if state[r][c] == self.blank:
+                if state[r][c] == '0':
                     return r, c
+        return False
 
-        #Converts all the X back 0 for another run thru.
-        for r in range(self.rows):
-            for c in range(self.cols):
-                if state[r][c] == 'X':
-                    state[r][c] = self.blank
-        
-        #Rechecks for any zeros left behind
-        for r in range(self.rows):
-            for c in range(self.cols):
-                if state[r][c] == self.blank:
-                    return r, c
+    def goal_test(self, state):
+        if not self.findBlank(state):
+            #??????? updating state to convert X back to 0
+            state = self.convert(state)
 
-        raise Exception('%s not found in state: %s' %
-              (self.blank, state))
-
-    def tileCheck(self, state):
-        try:
-            set().add(state)
-        except:
-            raise Exception(
-                'This state is not hashable:\n    %s' % state)
-        rows = len(state)
-        cols = len(state[0])
-        for row in state[1:]:
-            assert cols == len(row)
-        return rows, cols
-
-    # def scramble(self, howMany=10000):
-    #     state = self.goal
-    #     for i in range(howMany):
-    #         actions = self.actions(state)
-    #         children = [self.result(state,a)
-    #                     for a in actions]
-    #         state = random.choice(children)
-    #     return state
+        if not self.findBlank(state):
+            # if after conversion, there are no '0' left, we have solved it
+            return True
+        return False
 
 
+initialState = ('1030', '0210', '4100', '0000')
+instance = Sudoku(initialState)
+instance.label = '4x4 Sudoku, 10 gap'
 
-
-tiles = []
-tiles += [Tile(('1432','3214','4123','2301'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku, 1 gaps'
-
-tiles += [Tile(('1432','3214','4123','2300'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku, 2 gaps'
-
-tiles += [Tile(('1432','3014','4123','2300'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku, 3 gaps'
-
-tiles += [Tile(('1432','0014','4123','2300'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku, 4 gaps'
-
-tiles += [Tile(('1032','0014','4003','2300'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku, 7 gaps'
-
-# moves = 70
-# tiles += [Tile(None, ('abc','def','gh_'), moves)]
-# tiles[-1].label = '3x3 Tiles, %d moves' % moves
-
-def flounder(problem, giveup=10000):
-    'The worst way to solve a iProblem'
-    node = search.Node(problem.initial)
-    count = 0
-    while not problem.goal_test(node.state):
-        count += 1
-        if count >= giveup:
-            return None
-        children = node.expand(problem)
-        node = random.choice(children)
-    return node
-
-# fix this in your first commit and pull
 names = [
+    # Change to your name
     'Ingram, Clark',
     'Murdock, Adam',
+    # Add names to group different instances
+    # with different search methods.
 ]
 
 searches = {}
 searchMethods = {}
 
 searches[names[0]] = [
-    # switch,
-    tiles[0],
-    tiles[-1],
-    tiles[-2],
+    instance,
 ]
 
 searchMethods[names[0]] = [
     search.depth_first_graph_search,
-    search.breadth_first_search,
-    search.iterative_deepening_search,
-    search.uniform_cost_search,
-    search.astar_search,
-    flounder,
+    #search.breadth_first_search,
+    #search.iterative_deepening_search,
+    #search.uniform_cost_search,
+    #search.astar_search,
 ]
 
-searches[names[1]] = [
-    # tiles[-6],
-    # tiles[-3],
-]
+####################################################
+#
+# Modules in the examples folder
+# Import them for testing only.
 
-searchMethods[names[1]] = [
-    search.astar_search,
-]
+# from examples import lightSwitch
+# names += lightSwitch.names
+# searches.update(lightSwitch.searches)
+# searchMethods.update(lightSwitch.searchMethods)
+
+# from examples import fifteen
+# names += fifteen.names
+# searches.update(fifteen.searches)
+# searchMethods.update(fifteen.searchMethods)
+
+# from examples import nqueens
+# names += nqueens.names
+# searches.update(nqueens.searches)
+# searchMethods.update(nqueens.searchMethods)
+
+# from examples import flounder
+# for key in searchMethods:
+#     searchMethods[key] += [flounder.flounder]
