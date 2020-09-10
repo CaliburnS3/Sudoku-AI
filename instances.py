@@ -175,23 +175,6 @@ class Tile(search.Problem):
         return actions
         # return self.allowed(row, col)
 
-    def actions(self, state):
-        row, col = self.findBlank(state)
-        actions = []
-        board = [[t for t in row]
-                 for row in state]
-                 
-        if row > 0:
-            actions.append('down')
-        if col > 0:
-            actions.append('right')
-        if row < (self.rows - 1):
-            actions.append('up')
-        if col < (self.cols - 1):
-            actions.append('left')
-        return actions
-        # return self.allowed(row, col)
-
     def result(self, state, action):
         board = [[t for t in row]
                  for row in state]
