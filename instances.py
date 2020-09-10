@@ -156,6 +156,7 @@ class Tile(search.Problem):
         self.initial = initial
 
     def actions(self, state):
+        #Done
         #DONEif row contains no 0 or x (meaning that all other values are filled), fill in missing value
         #DONE if column contains no 0 or x (meaning that all other values are filled), fill in missing value
         #TODO if subbox contains no 0 or x (meaning that all other values are filled), fill in missing value
