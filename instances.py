@@ -72,32 +72,29 @@ class Solo(search.Problem):
         
 
 # A trivial Problem definition
-class LightSwitch(search.Problem):
-    # initial state constructor inherited
+# class LightSwitch(search.Problem):
+#     # initial state constructor inherited
 
-    def actions(self, state):
-        return ['up', 'down']
+#     def actions(self, state):
+#         return ['up', 'down']
 
-    def result(self, state, action):
-        if action == 'up':
-            return 'on'
-        else:
-            return 'off'
+#     def result(self, state, action):
+#         if action == 'up':
+#             return 'on'
+#         else:
+#             return 'off'
 
-    def goal_test(self, state):
-        return state == 'on'
+#     def goal_test(self, state):
+#         return state == 'on'
 
-switch = LightSwitch('off')
-switch.label = 'Light Switch'
-
-
-
+# switch = LightSwitch('off')
+# switch.label = 'Light Switch'
 
 
 # First. we findBlank, it returns the position of the first found "blank", in this case 0
-#TODO Then, it checks the row and column, determining if there is only 1 missing value.
-#TODO If so, it runs result, replacing that 0 with that value
-#TODO If no, it runs result, replacing that 0 with an "x"
+#DONE Then, it checks the row and column, determining if there is only 1 missing value.
+#DONE If so, it runs result, replacing that 0 with that value
+#DONE If no, it runs result, replacing that 0 with an "x"
 #TODO It continues the sweep, rinsing and repeating
 #TODO Once it makes its first initial sweep, it sweeps again, replacing all "x" with 0
 #TODO One final sweep, if there are no "0" then the puzzle is complete
@@ -159,21 +156,68 @@ class Tile(search.Problem):
         self.initial = initial
 
     def actions(self, state):
+        #DONEif row contains no 0 or x (meaning that all other values are filled), fill in missing value
+        #DONE if column contains no 0 or x (meaning that all other values are filled), fill in missing value
+        #TODO if subbox contains no 0 or x (meaning that all other values are filled), fill in missing value
+        #DONE otherwise, it may be implicitly solvable, and we dont touch that with a 10 foot pole.
+        #DONE otherwise, we replace 0 with X, meaning that we have attempted and can not get a result
         row, col = self.findBlank(state)
-
-        # problemArray[index] = new_value
-        
         actions = []
-        if row > 0:
-            actions.append('down')
-        if col > 0:
-            actions.append('right')
-        if row < (self.rows - 1):
-            actions.append('up')
-        if col < (self.cols - 1):
-            actions.append('left')
+
+        #These return the string version of actions
+        #Now, if string is a number, return to save a LOT of effort
+        rowValue = self.rowCheck(state)
+        if(rowValue != 'actionX' and rowValue != 'action0'):
+            actions.append(rowValue)
+            return actions
+            
+        colValue = self.colCheck(state)
+        if(colValue != 'actionX' and rowValue != 'action0'):
+            actions.append(rowValue)
+            return actions
+
+        #NOW, if you get to this point, that means that neither check worked.
+        #Replacing 0 with x, so that we dont get stuck scanning the same 0
+        actions.append('actionsX')
         return actions
         # return self.allowed(row, col)
+
+
+    def rowCheck(self, state):
+        test_list = [ 1, 2, 3, 4 ] 
+        board = [[t for t in row]
+                 for row in state]
+        for i in range(3):
+            #Checks, so we know which value to assign if the row is valid
+            if (board[i][col] in test_list): 
+                test_list.remove(board[i][col])
+
+            if(board[i][col] == 0 and board[i][col] != board[row][col]):
+                print("This row is not solvable.")
+                return actions
+
+        print("There is a solution.")
+        #Somehow check which number is missing
+        results = 'action' + str(test_list[0])
+        return results
+
+    def colCheck(self, state):
+        test_list = [ 1, 2, 3, 4 ] 
+        board = [[t for t in row]
+                 for row in state]
+        for i in range(3):
+            #Checks, so we know which value to assign if the row is valid
+            if (board[row][i] in test_list): 
+                test_list.remove(board[row][i])
+                
+            if(board[row][i] == 0 and board[rwo][i] != board[row][col]):
+                print("This col is not solvable.")
+                return 'actionX'
+
+        print("There is a solution.")
+        #Somehow check which number is missing
+        results = 'action' + str(test_list[0])
+        return results
 
     def result(self, state, action):
         board = [[t for t in row]
@@ -206,6 +250,19 @@ class Tile(search.Problem):
             for c in range(self.cols):
                 if state[r][c] == self.blank:
                     return r, c
+
+        #Converts all the X back 0 for another run thru.
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if state[r][c] == 'X':
+                    state[r][c] = self.blank
+        
+        #Rechecks for any zeros left behind
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if state[r][c] == self.blank:
+                    return r, c
+
         raise Exception('%s not found in state: %s' %
               (self.blank, state))
 
@@ -234,9 +291,20 @@ class Tile(search.Problem):
 
 
 tiles = []
+tiles += [Tile(('1432','3214','4123','2301'), ('1432','3214','4123','2341'))]
+tiles[-1].label = '4x4 Sudoku, 1 gaps'
+
+tiles += [Tile(('1432','3214','4123','2300'), ('1432','3214','4123','2341'))]
+tiles[-1].label = '4x4 Sudoku, 2 gaps'
+
+tiles += [Tile(('1432','3014','4123','2300'), ('1432','3214','4123','2341'))]
+tiles[-1].label = '4x4 Sudoku, 3 gaps'
 
 tiles += [Tile(('1432','0014','4123','2300'), ('1432','3214','4123','2341'))]
-tiles[-1].label = '4x4 Sudoku'
+tiles[-1].label = '4x4 Sudoku, 4 gaps'
+
+tiles += [Tile(('1032','0014','4003','2300'), ('1432','3214','4123','2341'))]
+tiles[-1].label = '4x4 Sudoku, 7 gaps'
 
 # moves = 70
 # tiles += [Tile(None, ('abc','def','gh_'), moves)]
@@ -256,17 +324,18 @@ def flounder(problem, giveup=10000):
 
 # fix this in your first commit and pull
 names = [
-    'Ingram, Franklin Clarkie',
-    'Murdock, Atom',
+    'Ingram, Clark',
+    'Murdock, Adam',
 ]
 
 searches = {}
 searchMethods = {}
 
 searches[names[0]] = [
-    switch,
+    # switch,
     tiles[0],
-    # tiles[1],
+    tiles[-1],
+    tiles[-2],
 ]
 
 searchMethods[names[0]] = [
