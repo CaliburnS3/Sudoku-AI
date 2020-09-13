@@ -10,9 +10,7 @@ class Sudoku(search.Problem):
         self.rows = len(initial)
         self.cols = len(initial[0])
         self.initial = initial
-        print('initial = ' + str(initialState))
-        self.actions(initial)
-
+        # self.actions(initial)
 
     def actions(self, state):
         # New version:
@@ -45,15 +43,17 @@ class Sudoku(search.Problem):
                 answerList.remove(colTest)
 
         # Now, if answerList has only 1 value, fill, otherwise X
+        """
         if len(answerList) == 1:
             output = str(answerList[0])
 
         else:
             output = 'X'
+        """
 
         # This returns the created output
         # self.result(state, output)
-        return output
+        return answerList
         # return []
 
     def result(self, state, action):
@@ -63,7 +63,7 @@ class Sudoku(search.Problem):
                           for row in board])
         # Finds the first blank, assigning it a new value and updating the game state
         rb, cb = self.findBlank(state)
-        board[rb][cb] = action
+        board[rb][cb] = str(action)
         newState = tuple([''.join(row)
                           for row in board])
         #TODO figure out how to assign state to outcome????
@@ -93,9 +93,11 @@ class Sudoku(search.Problem):
         return False
 
     def goal_test(self, state):
+        """
         if not self.findBlank(state):
             #??????? updating state to convert X back to 0
             state = self.convert(state)
+        """
 
         if not self.findBlank(state):
             # if after conversion, there are no '0' left, we have solved it
@@ -103,9 +105,10 @@ class Sudoku(search.Problem):
         return False
 
 
-initialState = ('1030', '0210', '4100', '0000')
-instance = Sudoku(initialState)
-instance.label = '4x4 Sudoku, 10 gap'
+instance = []
+initialState = ('1432', '3214', '4123', '2340')
+instance += Sudoku(initialState)
+instance[-1].label = '4x4 Sudoku, 1 step'
 
 names = [
     # Change to your name
@@ -124,10 +127,10 @@ searches[names[0]] = [
 
 searchMethods[names[0]] = [
     search.depth_first_graph_search,
-    #search.breadth_first_search,
-    #search.iterative_deepening_search,
-    #search.uniform_cost_search,
-    #search.astar_search,
+    search.breadth_first_search,
+    search.iterative_deepening_search,
+    search.uniform_cost_search,
+    # search.astar_search,
 ]
 
 ####################################################
