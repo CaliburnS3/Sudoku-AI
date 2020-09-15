@@ -5,12 +5,6 @@ import math
 
 
 class Sudoku(search.Problem):
-    # TODO: Implement sub-box algorithm
-    #  square root of row/col, basic grid etc.
-    # TODO: more puzzles
-    # TODO: a way to make searching faster,
-    #  such as having two options in 1 square,
-    #  but if using one answer, it makes another impossible
     # initial state constructor inherited
     def __init__(self, initial):
         self.rows = len(initial)
