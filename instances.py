@@ -1,10 +1,16 @@
 import search
 import sys
 import traceback
+import math
 
 
 class Sudoku(search.Problem):
-
+    # TODO: Implement sub-box algorithm
+    #  square root of row/col, basic grid etc.
+    # TODO: more puzzles
+    # TODO: a way to make searching faster,
+    #  such as having two options in 1 square,
+    #  but if using one answer, it makes another impossible
     # initial state constructor inherited
     def __init__(self, initial):
         self.rows = len(initial)
@@ -15,8 +21,6 @@ class Sudoku(search.Problem):
     def actions(self, state):
         # New version:
         # Checks both row and column, eliminating possiblities from both
-        # If it finishes with only 1 output possible, fill.
-        # Otherwise, put an X
 
         # Finding blank, so that we have values to work off of
         row, col = self.findBlank(state)
@@ -42,19 +46,24 @@ class Sudoku(search.Problem):
             if colTest in answerList:
                 answerList.remove(colTest)
 
-        # Now, if answerList has only 1 value, fill, otherwise X
-        """
-        if len(answerList) == 1:
-            output = str(answerList[0])
+        # Box check
+        # Finding sub-box sizes.
+        rowSquare = int(math.sqrt(self.rows))
+        colSquare = int(math.sqrt(self.cols))
+        
+        # Getting the box position of the blank's box
+        rowBox, colBox = self.findBlank(state)
+        rowBox, colBox = rowBox % rowSquare, colBox % colSquare
 
-        else:
-            output = 'X'
-        """
-
-        # This returns the created output
-        # self.result(state, output)
+        # Searching puzzle for all slots in box
+        for r in range(self.rows):
+            for c in range(self.cols):
+                if r % rowSquare == rowBox and c & colSquare == colBox:
+                    if state[r][c] in answerList:
+                        answerList.remove(state[r][c])
+                        
+        # This returns the created output as a list
         return answerList
-        # return []
 
     def result(self, state, action):
         board = [[t for t in row]
@@ -66,23 +75,10 @@ class Sudoku(search.Problem):
         board[rb][cb] = str(action)
         newState = tuple([''.join(row)
                           for row in board])
-        #TODO figure out how to assign state to outcome????
-        print('oldState = ' + str(oldState))
-        print('newState = ' + str(newState))
-        print('')
-        return newState
 
-    def convert(self, state):
-        # Converting all the 'X' back into '0' for another round of sudoku
-        board = [[t for t in row]
-                 for row in state]
-        for r in range(self.rows):
-            for c in range(self.cols):
-                if state[r][c] == 'X':
-                    rb, cb = r, c
-        board[rb][cb] = '0'
-        newState = tuple([''.join(row)
-                          for row in board])
+        # print('oldState = ' + str(oldState))
+        # print('newState = ' + str(newState))
+        # print('')
         return newState
 
     def findBlank(self, state):
@@ -93,22 +89,97 @@ class Sudoku(search.Problem):
         return False
 
     def goal_test(self, state):
-        """
         if not self.findBlank(state):
-            #??????? updating state to convert X back to 0
-            state = self.convert(state)
-        """
-
-        if not self.findBlank(state):
-            # if after conversion, there are no '0' left, we have solved it
+            # if there are no '0' left, we have solved it
             return True
         return False
 
 
-instance = []
-initialState = ('1432', '3214', '4123', '2340')
-instance += Sudoku(initialState)
-instance[-1].label = '4x4 Sudoku, 1 step'
+# initialState = ('1030', '0210', '4100', '0000'
+# initialState = ('0000', '0000', '0000', '0000')
+# initialState = ('1432', '3214', '4123', '2300')
+# instance = Sudoku(initialState)
+# instance.label = '4x4 Sudoku, 2 step gap'
+
+
+puzzle0 = (
+    '0200',
+    '3000',
+    '0000',
+    '0000')
+
+# 3x3 unsolved.png
+puzzle1 = (
+    '213', 
+    '100', 
+    '321')
+# 4x4 unsolved.jpeg
+puzzle2 = (
+    '1430', 
+    '0210', 
+    '4100', 
+    '0000')
+puzzle3 = (
+    '123564',
+    '650213',
+    '530421',
+    '400356',
+    '365142',
+    '241635'
+    # 6x6 unsolved
+)
+puzzle4 = (
+    '254680190',
+    '607915042',
+    '913027568',
+    '345071906',
+    '720349050',
+    '890206073',
+    '508764219',
+    '162508034',
+    '479132685',
+    # 9x9 unsolved
+)
+puzzle5 = (
+    '250600190',
+    '000900042',
+    '913027568',
+    '345001906',
+    '726349050',
+    '890206073',
+    '508764219',
+    '162508034',
+    '479132685'
+)
+# 9x9 unsolved.png
+puzzle6 = (
+    '530070000',
+    '600195000',
+    '098000060',
+    '800060003',
+    '400803001',
+    '700020006',
+    '060000280',
+    '000419005',
+    '000080079')
+
+# Multiple instances
+instance0 = Sudoku(puzzle0)
+# instance0.label("4x4 Can only be solved through box method.")
+
+instance1 = Sudoku(puzzle1)
+# instance1.label("3x3, 2 gaps")
+instance2 = Sudoku(puzzle2)
+# instance2.label("4x4, 5 gaps")
+instance3 = Sudoku(puzzle3)
+# instance3.label("6x6, 4 gaps")
+instance4 = Sudoku(puzzle4)
+# instance4.label("9x9 16 gaps (Might break everything.")
+instance5 = Sudoku(puzzle5)
+# instance5.label("9x9 22 gap (Will probably break everything.")
+
+# instance = Sudoku(puzzle3)
+# instance.label = '9x9 Sudoku, many many steps.'
 
 names = [
     # Change to your name
@@ -122,7 +193,12 @@ searches = {}
 searchMethods = {}
 
 searches[names[0]] = [
-    instance,
+    instance0,
+    instance1,
+    instance2,
+    instance3,
+    instance4,
+    instance5,
 ]
 
 searchMethods[names[0]] = [
